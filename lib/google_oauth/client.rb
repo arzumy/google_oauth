@@ -15,14 +15,14 @@ module GoogleOAuth
   
     def authorize_url(options = {})
       options[:scope] ||= 'https://www.google.com/m8/feeds/'
-      consumer.web_server.authorize_url(
+      consumer.auth_code.authorize_url(
         :redirect_uri => options[:callback] || @callback,
         :scope => options[:scope]
       )
     end
     
     def authorize(options = {})
-      @access_token ||= consumer.web_server.get_access_token(
+      @access_token ||= consumer.auth_code.get_token(
         options[:code],
         :redirect_uri => options[:callback] || @callback
       )
@@ -38,7 +38,7 @@ module GoogleOAuth
           { 
             :site => "https://accounts.google.com",
             :authorize_url => '/o/oauth2/auth',
-            :access_token_url => '/o/oauth2/token'
+            :token_url => '/o/oauth2/token'
           }
         )
       end

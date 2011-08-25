@@ -17,7 +17,7 @@ With your Client ID credentials you can now initialize the client:
       :redirect => 'YOUR_REDIRECT_URI',
     )
 
-    redirect_to client.authorization_url
+    redirect_to client.authorize_url
 
 At this point the client is redirected to the Google login page.  If they authorize your application then Google will return to your
 redirect URL with a <code>code</code> parameter.
