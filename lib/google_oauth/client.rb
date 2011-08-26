@@ -30,8 +30,15 @@ module GoogleOAuth
       @token = @access_token.token
       @access_token
     end
-    
 
+    def refresh!(refresh_token)
+      @access_token = access_token(refresh_token: refresh_token).refresh!
+      @token = @access_token.token
+      @access_token
+    end
+
+    protected
+    
       def consumer
         @consumer ||= OAuth2::Client.new(
           @application_id,
@@ -43,8 +50,8 @@ module GoogleOAuth
         )
       end
 
-      def access_token
-        OAuth2::AccessToken.new(consumer, @token)
+      def access_token(opts={})
+        OAuth2::AccessToken.new(consumer, @token, opts)
       end
       
       def _get_jsonc(url, params={})
