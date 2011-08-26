@@ -2,6 +2,7 @@ require 'google_oauth/hash_response'
 require 'google_oauth/array_response'
 require 'google_oauth/contacts'
 require 'google_oauth/calendar'
+require 'google_oauth/prediction'
 
 module GoogleOAuth
   class Client
@@ -30,7 +31,7 @@ module GoogleOAuth
       @access_token
     end
     
-    private
+
       def consumer
         @consumer ||= OAuth2::Client.new(
           @application_id,
@@ -38,8 +39,7 @@ module GoogleOAuth
           { 
             :site => "https://accounts.google.com",
             :authorize_url => '/o/oauth2/auth',
-            :token_url => '/o/oauth2/token'
-          }
+            :token_url => '/o/oauth2/token'          }
         )
       end
 
@@ -60,12 +60,17 @@ module GoogleOAuth
       end
       
       def _get(url, params={})
-        oauth_response = access_token.get(url, params)
+        access_token.get(url, params)
       end
 
-      def _post(url, params={}, headers={})
-        oauth_response = access_token.post(url, params, headers)
-        JSON.parse(oauth_response) rescue oauth_response
+      def _post_json(url, params={})
+        params.merge! headers: {'Content-Type' => 'application/json'}
+        res = _post(url, params)
+        GoogleOAuth::HashResponse.new(JSON.parse(res)) rescue res
+      end
+
+      def _post(url, params={})
+        access_token.post(url, params)
       end
 
       def _delete(url)
