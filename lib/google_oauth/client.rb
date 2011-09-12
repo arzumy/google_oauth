@@ -80,6 +80,16 @@ module GoogleOAuth
         access_token.post(url, params)
       end
 
+      def _put_json(url, params={})
+        params.merge! headers: {'Content-Type' => 'application/json'}
+        res = _put(url, params)
+        GoogleOAuth::HashResponse.new(JSON.parse(res)) rescue res
+      end
+
+      def _put(url, params={})
+        access_token.put(url, params)
+      end
+
       def _delete(url)
         oauth_response = access_token.delete(url)
         JSON.parse(oauth_response) rescue oauth_response
